@@ -1,0 +1,44 @@
+<aiml version="1.0">
+
+<!-- This category works with the Standard AIML Set -->
+<category>
+<pattern>LOAD AIML B</pattern>
+<template>
+<learn>bot/bukan/aiml/standard/std-65percent.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-atomic.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-botmaster.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-brain.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-connect.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-dictionary.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-disconnect.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-dont.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-errors.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-gender.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-geography.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-german.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-gossip.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-hello.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-inactivity.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-inventions.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-knowledge.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-lizards.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-login.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-numbers.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-personality.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-pickup.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-politics.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-profile.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-religion.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-robot.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-sales.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-sextalk.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-sports.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-srai.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-suffixes.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-that.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-turing.aiml</learn>
+<learn>bot/bukan/aiml/standard/std-yesno.aiml</learn>
+</template>
+</category>
+
+</aiml>
