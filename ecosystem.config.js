@@ -1,14 +1,15 @@
 module.exports = {
     apps: [{
-            name: 'saya_bukan_bot',
+            name: 'multi-channel-bot',
             script: './server.py',
             interpreter: './venv/bin/python',
             autorestart: true,
         },
         {
-            name: 'saya_bukan_bot_jobs',
-            script: '-m channel.telegram.jobs',
+            name: 'multi-channel-bot-jobs',
+            script: '',
             interpreter: './venv/bin/python',
+            interpreter_args: '-m channel.telegram.jobs',
             cron_restart: '*/30 * * * *'
         }
     ],
