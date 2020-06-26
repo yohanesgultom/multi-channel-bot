@@ -7,10 +7,11 @@ module.exports = {
         },
         {
             name: 'multi-channel-bot-jobs',
-            script: '',
+            script: './settings.py', // does nothing
             interpreter: './venv/bin/python',
             interpreter_args: '-m channel.telegram.jobs',
-            cron_restart: '*/30 * * * *'
+            cron_restart: '*/30 * * * *',
+            autorestart: false,
         }
     ],
 };
