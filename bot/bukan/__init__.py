@@ -1,5 +1,11 @@
 import aiml
 import os
+import logging
+import settings
+import bot
+
+LOG_LEVEL = settings.env('LOG_LEVEL', default='WARNING')
+logging.basicConfig(level=getattr(logging, LOG_LEVEL))
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -8,16 +14,27 @@ GENDER = 'Male'
 AIML_FILE = os.path.join(CURRENT_DIR, 'aiml', 'std-startup.xml')
 AIML_LOAD_CMD = 'load aiml b'
 
-k = aiml.Kernel()
-k.learn(AIML_FILE)
-k.respond(AIML_LOAD_CMD)
-k.setBotPredicate('name', NAME)
-k.setBotPredicate('gender', GENDER)
+class Bukan(bot.Base):
+    def __init__(self):
+        k = aiml.Kernel()
+        k.learn(AIML_FILE)
+        k.respond(AIML_LOAD_CMD)
+        k.setBotPredicate('name', NAME)
+        k.setBotPredicate('gender', GENDER)
+        self.k = k
 
-class Bukan:
     def reply(self, msg, user_id=None):
-        session_id = k._globalSessionID
+        session_id = self.k._globalSessionID
         if user_id:
-            k._addSession(user_id)
-            session_id = user_id
-        return k.respond(msg, sessionID=session_id)
+            self.k._addSession(user_id)
+            session_id = user_id   
+        return self.k.respond(msg, sessionID=session_id)
+
+    def get_predicate(self, key, user_id=None):
+        session_id = user_id if user_id else self.k._globalSessionID
+        self.k.getPredicate(key, sessionID=session_id)
+
+    def set_predicate(self, key, val, user_id=None):
+        session_id = user_id if user_id else self.k._globalSessionID
+        self.k.setPredicate(key, val, sessionID=session_id)
+       

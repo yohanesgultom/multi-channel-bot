@@ -4,7 +4,8 @@ import settings
 import importlib
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+LOG_LEVEL = settings.env('LOG_LEVEL', default='WARNING')
+logging.basicConfig(level=getattr(logging, LOG_LEVEL))
 
 async def handle(request):
     return web.json_response({'message': 'hello world'})
