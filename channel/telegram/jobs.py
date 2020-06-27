@@ -17,7 +17,11 @@ def job(f, *args):
     return w
 
 @job
-def send_notif(limit_per_person=5):
+def send_notif(limit_per_person=5, message_delay=5):
+    """
+    Iterate all RSS notification records, fetch the RSS feed
+    Send every new item to the corresponding chat_id
+    """
     now = datetime.now(timezone.utc)
     notifs = db.session.query(RSSNotification) \
         .order_by(RSSNotification.chat_id) \
@@ -28,6 +32,7 @@ def send_notif(limit_per_person=5):
             items = parser.fetch(n.rss_url, last_update=n.last_item_date)
             if items:
                 # send notif
+                max_date = n.last_item_date
                 limit = min(limit_per_person, len(items))
                 for item in items[:limit]:
                     s = ""
@@ -42,15 +47,19 @@ def send_notif(limit_per_person=5):
                     # send to user
                     msg = {'chat_id': n.chat_id, 'text': s, 'parse_mode': 'HTML'}
                     res = api_post('sendMessage', data=msg)
+                    # track max date
+                    if 'pubDate' in item:
+                        max_date = max(max_date, item['pubDate'])
                     logging.debug(res)
-                    n.last_item_date = item['pubDate'] if 'pubDate' in item else now
-                    db.session.commit()
-                    time.sleep(5)
+                    time.sleep(message_delay)
+                n.last_item_date = max_date
+                db.session.commit()                
         except Exception as e:
             logging.error(f'Failed sending notif for #{n.id}: {n.rss_url}')
             logging.exception(e)
 
 if __name__ == "__main__":
+    # run all functions with @job decorator
     for fname, (f, args) in jobs.items():
         logging.info(f'Running {fname} with {args}..')
         f(*args)

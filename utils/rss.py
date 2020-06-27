@@ -12,18 +12,21 @@ class RSSParser:
         soup = BeautifulSoup(content, 'lxml-xml')
         items = soup.find_all('item')      
 
+        # parse results
         results = []
         for item in items:
             record = {}
-            for tag in item.children:                
+            for tag in item.children:
                 if tag.name:
                     val = tag.string
                     if tag.name == 'pubDate':
                         val = datetime.strptime(val, '%a, %d %b %Y %H:%M:%S %z')
-                        if last_update and last_update > val:
-                            continue
                     elif tag.name == 'encoded' or tag.name == 'description':
                         val = val.replace('<br />', '\n').replace('&nbsp;', '').strip()
                     record[tag.name] = val        
-            results.append(record)
+            # include if no last_update
+            # or pubDate is newer than last_update
+            if not last_update \
+                or ('pubDate' in record and record['pubDate'] > last_update):
+                results.append(record)
         return results
