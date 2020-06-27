@@ -2,7 +2,7 @@ import aiml
 import os
 import logging
 import settings
-import bot
+from bot.base import Base
 
 LOG_LEVEL = settings.env('LOG_LEVEL', default='WARNING')
 logging.basicConfig(level=getattr(logging, LOG_LEVEL))
@@ -14,7 +14,7 @@ GENDER = 'Male'
 AIML_FILE = os.path.join(CURRENT_DIR, 'aiml', 'std-startup.xml')
 AIML_LOAD_CMD = 'load aiml b'
 
-class Bukan(bot.Base):
+class Bukan(Base):
     def __init__(self):
         k = aiml.Kernel()
         k.learn(AIML_FILE)

@@ -14,5 +14,4 @@ class TestRSS(unittest.TestCase):
         requests.get = mock.Mock(return_value=response)
         p = RSSParser()
         results = p.fetch(None)
-        print(results)
         self.assertEqual(len(results), 10)
