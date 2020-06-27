@@ -1,6 +1,15 @@
 import utils.helper as helper
 from .models import db, RSSNotification
 
+def help(bot_name, creator):
+    s = f'🤖 Hi, I am {bot_name}, created by {creator} to reply any of your message\\. I can only do few simple commands below now\\. Hopefully my creator will upgrade me soon\\.\n\n'
+    s += 'ℹ️ Available commands:\n\n'
+    s += '* `/rss_add url`: Add new RSS URL to monitor\n'
+    s += '* `/rss_list`: List monitored RSS URLs\n'
+    s += '* `/rss_del id`: Remove monitored RSS URL by ID\n'
+    s += '* `/help`: Show this\n'
+    return {'text': s, 'parse_mode': 'MarkdownV2'}
+
 def rss_add(user_id, chat_id, rss_url):
     # TODO: Premium user?
     limit = 2

@@ -96,14 +96,10 @@ class Telegram(Basic):
         # TODO: use decoration and reflection
         # to automatically register and map commands
         try:
-            if cmd in ['h', 'help']:
-                s = 'ℹ️ Available commands:\n\n'
-                s += '`/rss_add url`: Add new RSS URL to monitor\n\n'
-                s += '`/rss_list`: List monitored RSS URLs\n\n'
-                s += '`/rss_del id`: Remove monitored RSS URL by ID\n\n'
-                s += '`/help`: Show help (this!)\n\n'
-                reply['text'] = s
-                reply['parse_mode'] = 'MarkdownV2'
+            if cmd in ['h', 'help', 'start']:
+                bot_name = self.bot.k.getBotPredicate('name')
+                creator = '@yohanesgultom'
+                reply.update(commands.help(bot_name, creator))
             elif cmd == 'rss_add':
                 reply.update(commands.rss_add(sender_id, chat_id, args[0]))
             elif cmd == 'rss_list':
