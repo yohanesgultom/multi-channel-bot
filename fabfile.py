@@ -7,6 +7,7 @@ def deploy(c):
         print('Deploying...')
         with c.cd('~/multi-channel-bot'):
             c.run('git pull origin master')
+            c.run('pm2 flush')
             c.run('pm2 restart ecosystem.config.js')
 
 def test():
