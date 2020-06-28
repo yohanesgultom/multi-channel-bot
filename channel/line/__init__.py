@@ -83,7 +83,7 @@ class Line(Basic):
                         "replyToken": event['replyToken'],
                         "messages": [{ "type": "text", "text": msg }]
                     }
-                elif event['type'] == 'message':                
+                elif event['type'] == 'message' and 'text' in event['message']:
                     msg = event['message']['text']
                     bot_reply = self.bot.reply(msg, user_id=source['userId'])
                     reply = {
