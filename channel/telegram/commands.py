@@ -12,10 +12,11 @@ def help(bot_name, creator):
 
 def rss_add(user_id, chat_id, rss_url):
     # TODO: Premium user?
-    limit = 2
+    premium_users = ['405179790']
+    limit = 1
     count = db.session.query(RSSNotification.id).count()
-    if count >= limit:
-        return {'text': 'Sorry, currently we only allow max 2 RSS URLs per user 🙏🏻'}
+    if count >= limit and user_id not in premium_users:
+        return {'text': f'Sorry, currently we only allow max {limit} RSS URLs per user 🙏🏻'}
     notif = RSSNotification(
         user_id=user_id,
         chat_id=chat_id,
