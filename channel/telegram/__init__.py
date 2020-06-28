@@ -1,9 +1,9 @@
 from aiohttp import web
-from channel.basic import Basic
 import requests
-import settings
 import logging
 
+import settings
+from channel.basic import Basic
 from . import commands
 
 SERVER_URL = settings.env('SERVER_URL')

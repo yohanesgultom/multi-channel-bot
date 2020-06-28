@@ -16,7 +16,7 @@ async def error_middleware(request, handler):
         response = await handler(request)
         return response
     except Exception as e:
-        print('ERROR: {}'.format(e))
+        logging.exception(e)
         return web.Response(text=str(e), status=500)
 
 def channel_routes():

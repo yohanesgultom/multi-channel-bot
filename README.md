@@ -11,12 +11,7 @@ Features:
 Currently supported channels:
 1. Basic: simple channel accepting `POST /basic/` containing `{"message": "your message"}` body
 2. Telegram: https://core.telegram.org/bots/api. Demo: https://t.me/saya_bukan_bot
-
-Future support plan:
-1. LINE
-2. Facebook
-3. Discord
-4. Viber
+3. LINE: https://developers.line.biz/en/docs/messaging-api/building-bot/. Demo: https://line.me/R/ti/p/@162ernck
 
 ## Development
 
