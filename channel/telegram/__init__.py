@@ -58,15 +58,19 @@ class Telegram(Basic):
             message_id = message['message_id']
             msg = message['text']
 
-            # message.chat
-            chat = message['chat']
-            chat_id = chat['id']
-
             # message.sender
             sender = message['from']            
             sender_id = sender['id']
-            sender_username = sender['username']
-            sender_first_name = sender['first_name']
+            sender_username = sender['username'] if 'username' in sender else None
+            sender_first_name = sender['first_name'] if 'first_name' in seder else None
+
+            # message.chat
+            chat = message['chat']
+            chat_id = chat['id']
+            if not sender_username:
+                sender_username = chat['username'] if 'username' in chat
+            if not sender_first_name:
+                sender_first_name = chat['first_name'] if 'first_name' in chat
 
             # set name if not yet done
             if not self.bot.get_predicate('name', user_id=sender_id):

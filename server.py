@@ -16,6 +16,8 @@ async def error_middleware(request, handler):
         response = await handler(request)
         return response
     except Exception as e:
+        body = await request.text()
+        logging.error(body)
         logging.exception(e)
         return web.Response(text=str(e), status=500)
 
