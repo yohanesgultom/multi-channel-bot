@@ -16,4 +16,4 @@ def test():
     tests = loader.discover('test')
     testRunner = unittest.runner.TextTestRunner()
     result = testRunner.run(tests)
-    return len(result.failures) == 0
+    return len(result.failures) == 0 and len(result.errors) == 0 
