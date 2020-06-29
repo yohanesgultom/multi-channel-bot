@@ -62,7 +62,7 @@ class Telegram(Basic):
             sender = message['from']            
             sender_id = sender['id']
             sender_username = sender['username'] if 'username' in sender else None
-            sender_first_name = sender['first_name'] if 'first_name' in seder else None
+            sender_first_name = sender['first_name'] if 'first_name' in sender else None
 
             # message.chat
             chat = message['chat']
