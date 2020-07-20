@@ -22,7 +22,7 @@ class RSSParser:
                     val = tag.string
                     if tag.name == 'pubDate':
                         val = datetime.strptime(val, '%a, %d %b %Y %H:%M:%S %z')
-                    elif tag.name == 'encoded' or tag.name == 'description':
+                    elif tag.name == 'title' or tag.name == 'encoded' or tag.name == 'description':
                         val = val \
                             .replace('<br />', '\n') \
                             .replace('&nbsp;', '') \
@@ -30,6 +30,8 @@ class RSSParser:
                             .replace('&gt;', '>') \
                             .replace('&lt;', '<') \
                             .replace('&amp;', '&') \
+                            .replace('&rsquo;', "'") \
+                            .replace('&lsquo;', "'") \
                             .strip()
                     record[tag.name] = val        
             # extract more info
