@@ -1,7 +1,9 @@
 import utils.helper as helper
-from .models import db, RSSNotification
+from channel.telegram.models import db, RSSNotification
+from utils.indodax import get_indodax_summary
 
-def help(bot_name, creator):
+
+def get_help(bot_name, creator):
     s = f'🤖 Hi, I am {bot_name}, created by {creator} to reply any of your message\\. I can only do few simple commands below now\\. Hopefully my creator will upgrade me soon\\.\n\n'
     s += 'ℹ️ Available commands:\n\n'
     s += '* `/rss_add url`: Add new RSS URL to monitor\n'
@@ -9,6 +11,7 @@ def help(bot_name, creator):
     s += '* `/rss_del id`: Remove monitored RSS URL by ID\n'
     s += '* `/help`: Show this\n'
     return {'text': s, 'parse_mode': 'MarkdownV2'}
+
 
 def rss_add(user_id, chat_id, rss_url):
     # TODO: Premium user?
@@ -26,6 +29,7 @@ def rss_add(user_id, chat_id, rss_url):
     db.session.commit()
     return {'text': '✅ RSS notification added'}
 
+
 def rss_list(user_id):
     results = db.session.query(RSSNotification) \
         .filter(RSSNotification.user_id == user_id) \
@@ -39,6 +43,7 @@ def rss_list(user_id):
         reply += '```\n'
     return {'text': reply, 'parse_mode': 'MarkdownV2'}
 
+
 def rss_del(user_id, id):
     notif = db.session.query(RSSNotification) \
         .filter(RSSNotification.user_id == user_id, RSSNotification.id == id) \
@@ -50,3 +55,8 @@ def rss_del(user_id, id):
     else:
         reply = '⚠️ RSS notification not found'
     return {'text': reply}
+
+
+def indodax():
+    html = get_indodax_summary()
+    return {'text': html, 'parse_mode': 'html'}

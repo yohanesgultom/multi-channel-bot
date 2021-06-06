@@ -2,7 +2,6 @@ import aiml
 import os
 import logging
 import settings
-from utils import indodax
 from bot.base import Base
 
 LOG_LEVEL = settings.env('LOG_LEVEL', default='WARNING')
@@ -30,10 +29,7 @@ class Bukan(Base):
         if user_id:
             self.k._addSession(user_id)
             session_id = user_id
-        if msg.startswith('/indodax'):
-            return indodax.get_indodax_summary()
-        else:
-            return self.k.respond(msg, sessionID=session_id)
+        return self.k.respond(msg, sessionID=session_id)
 
     def get_predicate(self, key, user_id=None):
         session_id = user_id if user_id else self.k._globalSessionID

@@ -6,6 +6,7 @@ import settings
 from channel.basic import Basic
 from . import commands
 
+
 SERVER_URL = settings.env('SERVER_URL')
 BOT_TOKEN = settings.env('TELEGRAM_BOT_TOKEN')
 BASE_URL = f'https://api.telegram.org/bot{BOT_TOKEN}'
@@ -104,13 +105,15 @@ class Telegram(Basic):
             if cmd in ['h', 'help', 'start']:
                 bot_name = self.bot.k.getBotPredicate('name')
                 creator = '@yohanesgultom'
-                reply.update(commands.help(bot_name, creator))
+                reply.update(commands.get_help(bot_name, creator))
             elif cmd == 'rss_add':
                 reply.update(commands.rss_add(sender_id, chat_id, args[0]))
             elif cmd == 'rss_list':
                 reply.update(commands.rss_list(sender_id))
             elif cmd == 'rss_del':
                 reply.update(commands.rss_del(sender_id, args[0]))
+            elif cmd == 'indodax':
+                reply.update(commands.indodax())
         except Exception as e:
             logging.exception(e)
         return reply
