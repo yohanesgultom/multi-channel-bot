@@ -44,3 +44,11 @@ Run any single test:
 ```
 python -m unittest test.unit.test_rss.TestRSS
 ```
+
+## Deploy
+
+Deploy using fabric:
+
+```
+fab deploy -H user@server
+```

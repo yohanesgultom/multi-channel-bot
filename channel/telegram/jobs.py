@@ -27,6 +27,7 @@ def send_indodax_summary():
         ['eos_idr', 165001],
         ['eth_idr', 0],
         ['dot_idr', 0],
+        ['vex_idr', 0],
     ]
     # get current price from indodax
     r = requests.get(f'https://indodax.com/api/summaries')
