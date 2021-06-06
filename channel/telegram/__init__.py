@@ -10,6 +10,7 @@ SERVER_URL = settings.env('SERVER_URL')
 BOT_TOKEN = settings.env('TELEGRAM_BOT_TOKEN')
 BASE_URL = f'https://api.telegram.org/bot{BOT_TOKEN}'
 
+
 class Telegram(Basic):
     def __init__(self, bot): 
         super().__init__(bot)
@@ -119,6 +120,7 @@ def api_get(path, data={}):
     r = requests.get(f'{BASE_URL}/{path}', params=data)
     logging.debug(r.text)
     return r.json()
+
 
 def api_post(path, data={}):
     r = requests.post(f'{BASE_URL}/{path}', json=data)

@@ -1,7 +1,9 @@
 venv/
 .vscode/
+.idea/
 __pycache__
 *.pyc
 .env
 *.log
 *.sqlite3
+*.iml

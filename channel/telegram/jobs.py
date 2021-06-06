@@ -1,92 +1,61 @@
-import time
 import logging
-import settings
-from datetime import datetime, timezone
-from utils.rss import RSSParser
-from . import api_post
+import requests
+import time
+from . import settings, api_post
 from .models import db, RSSNotification
 
 LOG_LEVEL = settings.env('LOG_LEVEL', default='WARNING')
 logging.basicConfig(level=getattr(logging, LOG_LEVEL))
 
 jobs = {}
-def job(f, *args):
-    jobs[f.__name__] = (f, args)
-    def w():        
-        return f
+
+
+def job(func, *func_args):
+    jobs[func.__name__] = (func, func_args)
+
+    def w():
+        return func
+
     return w
 
+
 @job
-def send_notif(limit_per_person=5, message_delay=5):
-    """
-    Iterate all RSS notification records, fetch the RSS feed
-    Send every new item to the corresponding chat_id
-    """
-    now = datetime.now(timezone.utc)
-    notifs = db.session.query(RSSNotification) \
-        .order_by(RSSNotification.chat_id) \
-        .all()
-    parser = RSSParser()
-    for n in notifs:
-        try:
-            items = parser.fetch(n.rss_url, last_update=n.last_item_date)
-            if items:
-                # send notif
-                max_date = n.last_item_date
-                limit = min(limit_per_person, len(items))
-                renderer = render_common
-                if n.rss_url.startswith('https://www.upwork.com'):
-                    renderer = render_upwork
-                count = 0
-                for item in items:
-                    msg = renderer(item, n)
-                    if msg:
-                        res = api_post('sendMessage', data=msg)
-                        # track max date
-                        if 'pubDate' in item:
-                            max_date = max(max_date, item['pubDate']) \
-                                if max_date else item['pubDate']
-                        logging.debug(res)
-                        time.sleep(message_delay)
-                        count += 1
-                        if count >= limit:
-                            break
-                n.last_item_date = max_date
-                db.session.commit()                
-        except Exception as e:
-            logging.error(f'Failed sending notif for #{n.id}: {n.rss_url}')
-            logging.exception(e)
-
-def render_common(item, n):
-    s = ""
-    # title
-    if 'title' in item:
-        s += f"<b>{item['title']}</b>\n\n"
-    # description
-    if 'description' in item:
-        s += f"{item['description']}\n"
-    elif 'content:encoded' in item:
-        s += f"{item['content:encoded']}\n"
-    return {'chat_id': n.chat_id, 'text': s, 'parse_mode': 'HTML'} \
-        if s else None
-
-def render_upwork(item, n):
-    s = ""    
-    if 'title' in item:
-        # TODO: get criteria from database
-        if (not item['title'].lower().startswith('do not apply')) \
-            and (not item['rate_high'] or item['rate_high'] >= 20) \
-            and (not item['country'] or item['country'].lower() not in ['india', 'pakistan', 'bangladesh']):
-
-            s += f"<b>{item['title']}</b>\n\n"
-            description = None
-            if 'description' in item:
-                description = item['description']
-            elif 'encoded' in item:
-                description = item['encoded']
-            s += f"{description}\n"
-    return {'chat_id': n.chat_id, 'text': s, 'parse_mode': 'HTML'} \
-        if s else None
+def send_indodax_summary():
+    # TODO get from db
+    tickers = [
+        ['ada_idr', 29364],
+        ['eos_idr', 165001],
+        ['eth_idr', 0],
+        ['dot_idr', 0],
+    ]
+    # get current price from indodax
+    r = requests.get(f'https://indodax.com/api/summaries')
+    data = r.json()
+    items = []
+    server_time = None
+    if 'tickers' not in data:
+        print('ERROR: data does not contain tickers')
+    else:
+        for (t, ref_price) in tickers:
+            if t not in data['tickers']:
+                print(f'ERROR: {t} not in tickers data')
+            else:
+                t_data = data['tickers'][t]
+                t_name = t_data['name']
+                t_last = int(t_data['last'])
+                t_change = (t_last - ref_price) / ref_price * 100 if ref_price > 0 else 0
+                t_change_sym = '🟢' if t_change >= 0 else '🔴'
+                if server_time is None:
+                    server_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(t_data['server_time'])))
+                items.append(f'{t_change_sym} <b>{t_name}</b>: IDR {t_last:,} ({t_change:,.1f}%)')
+    html = '💲 <b>Indodax Summary</b>\n\n' + '\n'.join(items) + f'\n\n⏰️ {server_time}'
+    # print(msg)
+    notifications = db.session.query(RSSNotification) \
+            .order_by(RSSNotification.chat_id) \
+            .all()
+    for n in notifications:
+        msg = {'chat_id': n.chat_id, 'text': html, 'parse_mode': 'HTML'}
+        api_post('sendMessage', data=msg)
 
 
 if __name__ == "__main__":
