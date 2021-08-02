@@ -8,7 +8,7 @@ def get_indodax_summary():
         ['ada_idr', 29364],
         ['eos_idr', 165001],
         ['eth_idr', 0],
-        ['dot_idr', 0],
+        ['dot_idr', 229957],
         ['vex_idr', 0],
     ]
     # get current price from indodax
