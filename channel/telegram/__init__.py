@@ -114,6 +114,16 @@ class Telegram(Basic):
                 reply.update(commands.rss_del(sender_id, args[0]))
             elif cmd == 'indodax':
                 reply.update(commands.indodax())
+            elif cmd == 'indodax_add':
+                if len(args) < 2:
+                    reply.update({'text': '⚠️ Usage: `indodax_add <PAIR> <BUY PRICE>`\nExample: `indodax_add ada_idr 25600`', 'parse_mode': 'MarkdownV2'})
+                else:
+                    reply.update(commands.trading_portfolio_add(sender_id, 'indodax', args[0], args[1]))
+            elif cmd == 'indodax_del':
+                if len(args) < 2:
+                    reply.update({'text': '⚠️ Usage: `indodax_del <PAIR>`\nExample: `indodax_del ada_idr`', 'parse_mode': 'MarkdownV2'})
+                else:
+                    reply.update(commands.trading_portfolio_del(sender_id, 'indodax', args[0]))
         except Exception as e:
             logging.exception(e)
         return reply

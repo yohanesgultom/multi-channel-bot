@@ -1,5 +1,5 @@
 from datetime import timezone
-from sqlalchemy import TypeDecorator, Column, Integer, String, Text, TIMESTAMP
+from sqlalchemy import TypeDecorator, Column, Integer, String, Text, JSON, TIMESTAMP
 import utils.db as db
 
 
@@ -23,6 +23,13 @@ class RSSNotification(db.Base):
     chat_id = Column(String)
     rss_url = Column(Text, nullable=False)
     last_item_date = Column(TimeStamp)
+
+
+class TradingPortfolio(db.Base):
+    __tablename__ = 'trading_portfolios'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(String, nullable=False, index=True)
+    data = Column(JSON, nullable=True)
 
 
 db.create_all(db.Base, db.engine)

@@ -1,14 +1,14 @@
 import utils.helper as helper
-from channel.telegram.models import db, RSSNotification
+from channel.telegram.models import db, RSSNotification, TradingPortfolio
 from utils.indodax import get_indodax_summary
 
 
 def get_help(bot_name, creator):
     s = f'🤖 Hi, I am {bot_name}, created by {creator} to reply any of your message\\. I can only do few simple commands below now\\. Hopefully my creator will upgrade me soon\\.\n\n'
     s += 'ℹ️ Available commands:\n\n'
-    s += '* `/rss_add url`: Add new RSS URL to monitor\n'
-    s += '* `/rss_list`: List monitored RSS URLs\n'
-    s += '* `/rss_del id`: Remove monitored RSS URL by ID\n'
+    s += '* `/indodax`: Get indodax portfolio\n'
+    s += '* `/indodax_add <PAIR> <BUY PRICE>`: Add pair to indodax portfolio\n'
+    s += '* `/indodax_del <PAIR>`: Remove pair to indodax portfolio\n'
     s += '* `/help`: Show this\n'
     return {'text': s, 'parse_mode': 'MarkdownV2'}
 
@@ -44,7 +44,7 @@ def rss_list(user_id):
     return {'text': reply, 'parse_mode': 'MarkdownV2'}
 
 
-def rss_del(user_id, id):
+def rss_del(user_id: str, id: str) -> dict:
     notif = db.session.query(RSSNotification) \
         .filter(RSSNotification.user_id == user_id, RSSNotification.id == id) \
         .first()
@@ -54,9 +54,44 @@ def rss_del(user_id, id):
         reply = '✅ RSS notification deleted'
     else:
         reply = '⚠️ RSS notification not found'
-    return {'text': reply}
+    return {'text': reply, 'parse_mode': 'html'}
 
 
-def indodax():
-    html = get_indodax_summary()
-    return {'text': html, 'parse_mode': 'html'}
+def trading_portfolio_add(user_id: str, exchange: str, pair_id: str, buy_price: float) -> dict:
+    portfolio = db.session.query(TradingPortfolio) \
+        .filter(TradingPortfolio.user_id == user_id) \
+        .first()
+    new_data = {exchange: {pair_id: buy_price}}
+    if not portfolio:
+        portfolio = TradingPortfolio(user_id=user_id, data=new_data)
+        db.session.add(portfolio)
+    else:
+        portfolio.data.update(new_data)
+    db.session.commit()
+    reply = '✅ Portfolio updated'
+    return {'text': reply, 'parse_mode': 'html'}
+
+
+def trading_portfolio_del(user_id: str, exchange: str, pair_id: str) -> dict:
+    portfolio = db.session.query(TradingPortfolio) \
+        .filter(TradingPortfolio.user_id == user_id) \
+        .first()
+    if portfolio and exchange in portfolio.data:
+        tmp = portfolio.data[exchange]
+        tmp.pop(pair_id)
+        portfolio.data = tmp
+        db.session.commit()
+        reply = '✅ Pair removed'        
+    else:
+        reply = '⚠️ Pair not found'
+    return {'text': reply, 'parse_mode': 'html'}
+
+def indodax(user_id: str) -> dict:
+    portfolio = db.session.query(TradingPortfolio) \
+        .filter(TradingPortfolio.user_id == user_id) \
+        .first()
+    if portfolio and 'indodax' in portfolio.data:
+        reply = get_indodax_summary(portfolio.data['indodax'])
+    else:
+        reply = 'ℹ️ No portfolio found'
+    return {'text': reply, 'parse_mode': 'html'}

@@ -1,16 +1,14 @@
 import requests
 import time
 
-
-def get_indodax_summary():
-    # TODO get from db
-    tickers = [
-        ['ada_idr', 29364],
-        ['eos_idr', 165001],
-        ['eth_idr', 0],
-        ['dot_idr', 229957],
-        ['vex_idr', 0],
-    ]
+def get_indodax_summary(tickers: dict) -> str:
+    # tickers = {
+    #     'ada_idr': 29364,
+    #     'eos_idr': 165001,
+    #     'eth_idr': 0,
+    #     'dot_idr': 229957,
+    #     'vex_idr': 0,
+    # }
     # get current price from indodax
     r = requests.get(f'https://indodax.com/api/summaries')
     data = r.json()
@@ -19,7 +17,7 @@ def get_indodax_summary():
     if 'tickers' not in data:
         print('ERROR: data does not contain tickers')
     else:
-        for (t, ref_price) in tickers:
+        for t, ref_price in tickers.items():
             if t not in data['tickers']:
                 print(f'ERROR: {t} not in tickers data')
             else:
