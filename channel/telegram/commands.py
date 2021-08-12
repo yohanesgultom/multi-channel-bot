@@ -1,5 +1,5 @@
 import utils.helper as helper
-from channel.telegram.models import db, RSSNotification, TradingPortfolio
+from channel.telegram.models import db, flag_modified, RSSNotification, TradingPortfolio
 from utils.indodax import get_indodax_summary
 
 
@@ -66,8 +66,10 @@ def trading_portfolio_add(user_id: str, chat_id: str, exchange: str, pair_id: st
         portfolio = TradingPortfolio(user_id=user_id, chat_id=chat_id, data=new_data)
         db.session.add(portfolio)
     else:
+        tmp = dict(portfolio.data)
+        portfolio.data = helper.deep_update(tmp, new_data)
         portfolio.chat_id = chat_id
-        portfolio.data.update(new_data)
+        flag_modified(portfolio, 'data')
     db.session.commit()
     reply = '✅ Portfolio updated'
     return {'text': reply, 'parse_mode': 'html'}
@@ -79,9 +81,10 @@ def trading_portfolio_del(user_id: str, chat_id: str, exchange: str, pair_id: st
         .first()
     if portfolio and exchange in portfolio.data:
         portfolio.chat_id = chat_id
-        tmp = portfolio.data[exchange]
-        tmp.pop(pair_id)
+        tmp = dict(portfolio.data)
+        tmp[exchange].pop(pair_id)
         portfolio.data = tmp
+        flag_modified(portfolio, 'data')
         db.session.commit()
         reply = '✅ Pair removed'        
     else:
@@ -92,7 +95,7 @@ def indodax(user_id: str) -> dict:
     portfolio = db.session.query(TradingPortfolio) \
         .filter(TradingPortfolio.user_id == user_id) \
         .first()
-    if portfolio and 'indodax' in portfolio.data:
+    if portfolio and 'indodax' in portfolio.data and portfolio.data['indodax']:
         reply = get_indodax_summary(portfolio.data['indodax'])
     else:
         reply = 'ℹ️ No portfolio found'

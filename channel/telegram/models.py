@@ -1,5 +1,6 @@
 from datetime import timezone
 from sqlalchemy import TypeDecorator, Column, Integer, String, Text, JSON, TIMESTAMP
+from sqlalchemy.orm.attributes import flag_modified
 import utils.db as db
 
 
