@@ -120,7 +120,7 @@ class Telegram(Basic):
                 else:
                     reply.update(commands.trading_portfolio_add(sender_id, chat_id, 'indodax', args[0], float(args[1])))
             elif cmd == 'indodax_del':
-                if len(args) < 2:
+                if len(args) < 1:
                     reply.update({'text': '⚠️ Usage: `indodax_del <PAIR>`\nExample: `indodax_del ada_idr`', 'parse_mode': 'MarkdownV2'})
                 else:
                     reply.update(commands.trading_portfolio_del(sender_id, chat_id, 'indodax', args[0]))
