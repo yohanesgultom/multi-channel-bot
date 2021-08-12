@@ -113,7 +113,7 @@ class Telegram(Basic):
             elif cmd == 'rss_del':
                 reply.update(commands.rss_del(sender_id, args[0]))
             elif cmd == 'indodax':
-                reply.update(commands.indodax())
+                reply.update(commands.indodax(sender_id))
             elif cmd == 'indodax_add':
                 if len(args) < 2:
                     reply.update({'text': '⚠️ Usage: `indodax_add <PAIR> <BUY PRICE>`\nExample: `indodax_add ada_idr 25600`', 'parse_mode': 'MarkdownV2'})
