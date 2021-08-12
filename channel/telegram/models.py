@@ -29,6 +29,7 @@ class TradingPortfolio(db.Base):
     __tablename__ = 'trading_portfolios'
     id = Column(Integer, primary_key=True)
     user_id = Column(String, nullable=False, index=True)
+    chat_id = Column(String)
     data = Column(JSON, nullable=True)
 
 

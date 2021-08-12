@@ -57,26 +57,28 @@ def rss_del(user_id: str, id: str) -> dict:
     return {'text': reply, 'parse_mode': 'html'}
 
 
-def trading_portfolio_add(user_id: str, exchange: str, pair_id: str, buy_price: float) -> dict:
+def trading_portfolio_add(user_id: str, chat_id: str, exchange: str, pair_id: str, buy_price: float) -> dict:
     portfolio = db.session.query(TradingPortfolio) \
         .filter(TradingPortfolio.user_id == user_id) \
         .first()
     new_data = {exchange: {pair_id: buy_price}}
     if not portfolio:
-        portfolio = TradingPortfolio(user_id=user_id, data=new_data)
+        portfolio = TradingPortfolio(user_id=user_id, chat_id=chat_id, data=new_data)
         db.session.add(portfolio)
     else:
+        portfolio.chat_id = chat_id
         portfolio.data.update(new_data)
     db.session.commit()
     reply = '✅ Portfolio updated'
     return {'text': reply, 'parse_mode': 'html'}
 
 
-def trading_portfolio_del(user_id: str, exchange: str, pair_id: str) -> dict:
+def trading_portfolio_del(user_id: str, chat_id: str, exchange: str, pair_id: str) -> dict:
     portfolio = db.session.query(TradingPortfolio) \
         .filter(TradingPortfolio.user_id == user_id) \
         .first()
     if portfolio and exchange in portfolio.data:
+        portfolio.chat_id = chat_id
         tmp = portfolio.data[exchange]
         tmp.pop(pair_id)
         portfolio.data = tmp
