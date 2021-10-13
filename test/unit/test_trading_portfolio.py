@@ -31,7 +31,7 @@ class TestTradingPortfolio(unittest.TestCase):
         requests.get = mock.Mock(return_value=response)
 
         # before adding
-        reply = commands.indodax(user_id)
+        reply = commands.indodax_summary(user_id)
         self.assertEqual(reply, {'text': 'ℹ️ No portfolio found', 'parse_mode': 'html'})
 
         # add
@@ -39,7 +39,7 @@ class TestTradingPortfolio(unittest.TestCase):
         self.assertEqual(reply, {'text': '✅ Portfolio updated', 'parse_mode': 'html'})
         
         # after adding
-        reply = commands.indodax(user_id)
+        reply = commands.indodax_summary(user_id)
         self.assertEqual(reply, {'text': '💲 <b>Indodax Summary</b>\n\n🟢 <b>Cardano</b>: IDR 30,000 (3.4%)\n\n⏰️ 2021-08-12 16:02:44', 'parse_mode': 'html'})
 
     @mock.patch('utils.indodax.requests')
@@ -68,7 +68,7 @@ class TestTradingPortfolio(unittest.TestCase):
 
         # before updating
         reply = commands.trading_portfolio_add(user_id, chat_id, exchange, next(iter(tickers)), price_ref)
-        reply = commands.indodax(user_id)
+        reply = commands.indodax_summary(user_id)
         self.assertEqual(reply, {'text': '💲 <b>Indodax Summary</b>\n\n🟢 <b>Cardano</b>: IDR 30,000 (3.4%)\n\n⏰️ 2021-08-12 16:02:44', 'parse_mode': 'html'})
 
         # update
@@ -79,7 +79,7 @@ class TestTradingPortfolio(unittest.TestCase):
         self.assertEqual(reply, {'text': '✅ Portfolio updated', 'parse_mode': 'html'})
         
         # after adding
-        reply = commands.indodax(user_id)
+        reply = commands.indodax_summary(user_id)
         self.assertEqual(reply, {'text': '💲 <b>Indodax Summary</b>\n\n🟢 <b>Cardano</b>: IDR 30,000 (3.4%)\n🟢 <b>Polkadot</b>: IDR 301,000 (0.7%)\n\n⏰️ 2021-08-12 16:02:44', 'parse_mode': 'html'})        
 
     @mock.patch('utils.indodax.requests')
@@ -103,7 +103,7 @@ class TestTradingPortfolio(unittest.TestCase):
 
         # before deleting
         reply = commands.trading_portfolio_add(user_id, chat_id, exchange, next(iter(tickers)), price_ref)        
-        reply = commands.indodax(user_id)
+        reply = commands.indodax_summary(user_id)
         self.assertEqual(reply, {'text': '💲 <b>Indodax Summary</b>\n\n🟢 <b>Cardano</b>: IDR 30,000 (3.4%)\n\n⏰️ 2021-08-12 16:02:44', 'parse_mode': 'html'})
 
         # delete
@@ -111,7 +111,7 @@ class TestTradingPortfolio(unittest.TestCase):
         self.assertEqual(reply, {'text': '✅ Pair removed', 'parse_mode': 'html'})
 
         # after deleting
-        reply = commands.indodax(user_id)
+        reply = commands.indodax_summary(user_id)
         self.assertEqual(reply, {'text': 'ℹ️ No portfolio found', 'parse_mode': 'html'})
 
 

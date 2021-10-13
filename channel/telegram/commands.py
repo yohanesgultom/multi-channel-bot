@@ -91,7 +91,7 @@ def trading_portfolio_del(user_id: str, chat_id: str, exchange: str, pair_id: st
         reply = '⚠️ Pair not found'
     return {'text': reply, 'parse_mode': 'html'}
 
-def indodax(user_id: str) -> dict:
+def indodax_summary(user_id: str) -> dict:
     portfolio = db.session.query(TradingPortfolio) \
         .filter(TradingPortfolio.user_id == user_id) \
         .first()
