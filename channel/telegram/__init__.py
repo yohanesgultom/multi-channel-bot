@@ -124,6 +124,11 @@ class Telegram(Basic):
                     reply.update({'text': '⚠️ Usage: `indodax_del <PAIR>`\nExample: `indodax_del ada_idr`', 'parse_mode': 'MarkdownV2'})
                 else:
                     reply.update(commands.trading_portfolio_del(sender_id, chat_id, 'indodax', args[0]))
+            elif cmd == 'ssl_expiry':
+                if len(args) < 1:
+                    reply.update({'text': '⚠️ Usage: `ssl_expiry <DOMAIN>`\nExample: `ssl_expiry google.com`', 'parse_mode': 'MarkdownV2'})
+                else:
+                    reply.update(commands.ssl_before_expired(chat_id, args[0]))
         except Exception as e:
             logging.exception(e)
         return reply

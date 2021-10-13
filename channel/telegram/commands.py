@@ -1,6 +1,6 @@
 import utils.helper as helper
 from channel.telegram.models import db, flag_modified, RSSNotification, TradingPortfolio
-from utils.indodax import get_indodax_summary
+from utils import ssl, indodax
 
 
 def get_help(bot_name, creator):
@@ -96,7 +96,20 @@ def indodax(user_id: str) -> dict:
         .filter(TradingPortfolio.user_id == user_id) \
         .first()
     if portfolio and 'indodax' in portfolio.data and portfolio.data['indodax']:
-        reply = get_indodax_summary(portfolio.data['indodax'])
+        reply = indodax.get_indodax_summary(portfolio.data['indodax'])
     else:
         reply = 'ℹ️ No portfolio found'
+    return {'text': reply, 'parse_mode': 'html'}
+
+def ssl_before_expired(chat_id: str, hostname: str) -> dict:
+    try:
+        num_days = ssl.get_num_days_before_expired(hostname)        
+        icon = '🟢'
+        if num_days <= 0:
+            icon = '🔴'
+        elif num_days <= 7:
+            icon = '🟡'
+        reply = f'{icon} {hostname} expires in {num_days} day(s)'
+    except:
+        reply = f'⚠️ Unable to get SSL information of {hostname}'
     return {'text': reply, 'parse_mode': 'html'}
