@@ -16,7 +16,7 @@ lxml==4.9.1
 more-itertools==8.4.0
 multidict==4.7.5
 packaging==20.4
-paramiko==2.10.1
+paramiko==3.4.0
 pluggy==0.13.1
 py==1.10.0
 pycparser==2.20
