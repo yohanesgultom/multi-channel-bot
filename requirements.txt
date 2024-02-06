@@ -6,7 +6,7 @@ beautifulsoup4==4.9.1
 certifi==2023.7.22
 cffi==1.14.0
 chardet==3.0.4
-cryptography==41.0.6
+cryptography==42.0.0
 fabric==2.5.0
 idna==2.9
 idna-ssl==1.1.0
